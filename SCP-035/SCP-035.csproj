@@ -12,6 +12,7 @@
         <AssemblyName>SCP_035</AssemblyName>
         <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>x64</PlatformTarget>
@@ -108,7 +109,16 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Components\HighlightManager.cs" />
+        <Compile Include="Components\Keycard035Contain.cs" />
+        <Compile Include="Components\Scp035Component.cs" />
         <Compile Include="Config.cs" />
+        <Compile Include="Extensions\PlayerExtensions.cs" />
+        <Compile Include="Features\Components\Interfaces\IPropertyModule.cs" />
+        <Compile Include="Features\Components\PlayerProperties.cs" />
+        <Compile Include="Features\CoroutineRunner.cs" />
+        <Compile Include="Features\Scp035PlayerComponent.cs" />
+        <Compile Include="Handlers\Scp035Handler.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
