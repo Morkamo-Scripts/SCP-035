@@ -1,11 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
+using Exiled.API.Features;
+using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Player;
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.Arguments.ServerEvents;
+using MapGeneration.Distributors;
 using MEC;
 using PlayerRoles;
+using ProjectMER.Events.Arguments;
+using ProjectMER.Features.Extensions;
+using ProjectMER.Features.Serializable;
 using RueI.API;
 using RueI.API.Elements;
 using SCP_035.Components;
@@ -13,6 +21,7 @@ using SCP_035.Extensions;
 using SCP_035.Features;
 using UnityEngine;
 using events = Exiled.Events.Handlers;
+using Object = UnityEngine.Object;
 using Pickup = Exiled.API.Features.Pickups.Pickup;
 using Player = Exiled.API.Features.Player;
 
@@ -87,7 +96,7 @@ namespace SCP_035.Handlers
         private void OnReceivingEffect(ReceivingEffectEventArgs ev)
         {
             if (!ev.Player.IsNPC && ev.Player.Scp035Properties().PlayerProps.IsPlayScp035 && ev.Effect.TryGetEffectType(out var effectType))
-                if (effectType == EffectType.CardiacArrest || effectType == EffectType.Exhausted)
+                if (effectType == EffectType.CardiacArrest/* || effectType == EffectType.Exhausted*/)
                     ev.IsAllowed = false;
         }
         
@@ -131,13 +140,21 @@ namespace SCP_035.Handlers
 
         private void OnChangedRole(PlayerChangedRoleEventArgs ev)
         {
-            var player = Player.Get(ev.Player);
-            var properties = player.Scp035Properties().PlayerProps;
+            try
+            {
+                var player = Player.Get(ev.Player);
             
-            if (player.IsNPC || !properties.IsPlayScp035)
-                return;
+                if (player == null)
+                    return;
+            
+                var properties = player.Scp035Properties()?.PlayerProps;
+            
+                if (player.IsNPC || properties == null || !properties.IsPlayScp035)
+                    return;
 
-            RemoveRole(ev.Player);
+                RemoveRole(ev.Player);
+            }
+            catch  { /*ignored*/ }
         }
 
         private void OnEscaping(EscapingEventArgs ev)
@@ -182,24 +199,11 @@ namespace SCP_035.Handlers
             var properties = ev.Player.Scp035Properties().PlayerProps;
             
             if (!ev.Player.IsNPC && properties.IsPlayScp035)
-            {
                 RemoveRole(ev.Player);
-                
-                LabApi.Features.Wrappers.Cassie.Message(
-                    "SCP 0 3 5 Successfully terminated by .G5 Time lost", true, true, true,
-                    "Scp-035 [<color=red>Keter</color>] успешно уничтожен. Носитель погиб!"
-                );
-            }
         }
 
         private void OnHurting(HurtingEventArgs ev)
         {
-            if (ev.Attacker?.Role == RoleTypeId.Scp049)
-            {
-                ev.Player.Kill(ev.DamageHandler);
-                return;
-            }
-            
             if (!ev.Player.IsNPC && ev.Player.Scp035Properties().PlayerProps.IsPlayScp035 &&
                 ev.DamageHandler.Type == DamageType.CardiacArrest)
             {
@@ -259,11 +263,12 @@ namespace SCP_035.Handlers
 
         private IEnumerator Scp035LifeProcessor(Player player)
         {
+            player.Role.Set(RoleTypeId.Tutorial, RoleSpawnFlags.None);
             player.MaxHealth = Plugin.Instance.Config.Scp035Role.Health;
             player.Health = Plugin.Instance.Config.Scp035Role.Health;
             player.DisableAllEffects();
             player.EnableEffect(EffectType.CardiacArrest);
-            player.EnableEffect(EffectType.Exhausted);
+            /*player.EnableEffect(EffectType.Exhausted);*/
 
             var properties = player.Scp035Properties().PlayerProps;
             properties.IsPlayScp035 = true;
@@ -347,6 +352,11 @@ namespace SCP_035.Handlers
             properties.IsEscapingHintActive = false;
             properties.IsEquipping035Item = false;
             properties.IsPlayScp035 = false;
+            
+            LabApi.Features.Wrappers.Cassie.Message(
+                "SCP 0 3 5 Successfully terminated by .G5 Time lost", true, true, true,
+                "Scp-035 [<color=red>Keter</color>] успешно уничтожен. Носитель погиб."
+            );
         }
     }
 }
