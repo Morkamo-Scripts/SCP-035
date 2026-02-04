@@ -13,5 +13,6 @@ public class PlayerProperties(Scp035PlayerComponent scp035PlayerComponent) : IPr
     
     public Coroutine Scp035ProcessorCoroutine { get; set; }
     public Coroutine ScpLabelHintProcessorCoroutine { get; set; }
+    public Coroutine HumeShieldProcessorCoroutine { get; set; }
     public GameObject HighlightPrefab { get; set; }
 }

@@ -46,6 +46,9 @@
         <Reference Include="CommandSystem.Core" Private="False">
             <HintPath>..\..\Libs\CommandSystem.Core.dll</HintPath>
         </Reference>
+        <Reference Include="SerpentHands" Private="False">
+            <HintPath>..\..\Libs\SerpentHands.dll</HintPath>
+        </Reference>
         <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" Private="False">
             <HintPath>..\packages\ExMod.Exiled.9.12.2\lib\net48\CommandSystem.Core.dll</HintPath>
         </Reference>
@@ -121,6 +124,7 @@
         <Compile Include="Features\Components\PlayerProperties.cs" />
         <Compile Include="Features\CoroutineRunner.cs" />
         <Compile Include="Features\Scp035PlayerComponent.cs" />
+        <Compile Include="Handlers\RoundHandler.cs" />
         <Compile Include="Handlers\Scp035Handler.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>

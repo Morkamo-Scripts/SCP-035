@@ -19,19 +19,19 @@ namespace SCP_035
 
     public class Scp035Role
     {
-        public float Health { get; set; } = 2000;
+        public float Health { get; set; } = 300;
+        public float MaxHumeShield { get; set; } = 100;
 
         public HashSet<ItemType> NotAllowedItems { get; set; } =
         [
-            ItemType.MicroHID,
             ItemType.Coin,
+            ItemType.MicroHID,
+            ItemType.ParticleDisruptor,
+            ItemType.Jailbird,
+            ItemType.GunSCP127,
             ItemType.SCP1344,
-            ItemType.SCP330,
             ItemType.AntiSCP207,
-            ItemType.Medkit,
-            ItemType.Adrenaline,
-            ItemType.Painkillers,
-            ItemType.SCP500
+            ItemType.SCP1509
         ];
     }
 }

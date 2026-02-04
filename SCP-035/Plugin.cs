@@ -5,6 +5,7 @@ using Exiled.Events.EventArgs.Player;
 using HarmonyLib;
 using LabApi.Events;
 using SCP_035.Features;
+using SCP_035.Handlers;
 
 namespace SCP_035
 {
@@ -13,15 +14,20 @@ namespace SCP_035
         public override string Name => "SCP-035";
         public override string Prefix => Name;
         public override string Author => "Morkamo";
-        public override Version Version => new Version(1, 0, 0);
+        public override Version Version => new Version(2, 1, 0);
         public override Version RequiredExiledVersion => new Version(9, 12, 1);
         
         public static Plugin Instance { get; private set; }
+        private RoundHandler _roundHandler;
         
         public override void OnEnabled()
         {
             Instance = this;
+            _roundHandler = new RoundHandler();
+            
             Exiled.Events.Handlers.Player.Verified += OnVerifiedPlayer;
+            Exiled.Events.Handlers.Server.EndingRound += _roundHandler.OnEndingRound;
+            
             Config.Scp035Item.Register();
             Config.Scp035KeycardContain.Register();
             base.OnEnabled();
@@ -31,7 +37,11 @@ namespace SCP_035
         {
             Config.Scp035KeycardContain.Unregister();
             Config.Scp035Item.Unregister();
+            
             Exiled.Events.Handlers.Player.Verified -= OnVerifiedPlayer;
+            Exiled.Events.Handlers.Server.EndingRound -= _roundHandler.OnEndingRound;
+            
+            _roundHandler = null;
             Instance = null;
             base.OnDisabled();
         }
