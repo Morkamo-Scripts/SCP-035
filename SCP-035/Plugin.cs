@@ -14,7 +14,7 @@ namespace SCP_035
         public override string Name => "SCP-035";
         public override string Prefix => Name;
         public override string Author => "Morkamo";
-        public override Version Version => new Version(2, 1, 0);
+        public override Version Version => new Version(2, 1, 1);
         public override Version RequiredExiledVersion => new Version(9, 12, 1);
         
         public static Plugin Instance { get; private set; }

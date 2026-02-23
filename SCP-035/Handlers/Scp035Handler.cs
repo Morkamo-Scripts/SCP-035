@@ -6,6 +6,7 @@ using CustomPlayerEffects;
 using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.API.Features.Roles;
 using Exiled.API.Features.Toys;
 using Exiled.CustomItems.API.Features;
@@ -437,6 +438,39 @@ namespace SCP_035.Handlers
                     new BasicElement(300, Description), 20);
                     
                 Timing.CallDelayed(20.1f, () => RueDisplay.Get(spec).Update());
+            }
+
+            HashSet<Item> notAllowedItems = new();
+            
+            foreach (var item in player.Items)
+            {
+                if (Plugin.Instance.Config.Scp035Role.NotAllowedItems.Contains(item.Type))
+                {
+                    notAllowedItems.Add(item);
+                }
+            }
+
+            if (!notAllowedItems.IsEmpty())
+            {
+                foreach (var item in notAllowedItems)
+                {
+                    player.DropItem(item);
+                }
+                
+                RueDisplay.Get(player).Show(
+                    new Tag(),
+                    new BasicElement(900, "<size=50><b><color=#C70000>Все запрещенные предметы были сброшены!</color></b></size>"), 4);
+                
+                Timing.CallDelayed(4.1f, () => RueDisplay.Get(player).Update());
+
+                foreach (var spec in player.CurrentSpectatingPlayers)
+                {
+                    RueDisplay.Get(spec).Show(
+                        new Tag(),
+                        new BasicElement(900, "<size=50><b><color=#C70000>Все запрещенные предметы были сброшены!</color></b></size>"), 4);
+                    
+                    Timing.CallDelayed(4.1f, () => RueDisplay.Get(spec).Update());
+                }
             }
             
             while (player.IsConnected && player.IsAlive && properties.IsPlayScp035)
